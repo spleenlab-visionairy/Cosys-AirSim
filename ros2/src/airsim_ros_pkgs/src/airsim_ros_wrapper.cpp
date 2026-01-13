@@ -188,10 +188,10 @@ void AirsimROSWrapper::create_ros_pubs_from_settings_json()
         append_static_vehicle_tf(vehicle_ros.get(), *vehicle_setting);
 
         const std::string topic_prefix = "~/" + curr_vehicle_name;
-        vehicle_ros->odom_local_pub_ = nh_->create_publisher<nav_msgs::msg::Odometry>(topic_prefix + "/est/" + odom_frame_id_, 10);
+        vehicle_ros->odom_local_pub_ = nh_->create_publisher<nav_msgs::msg::Odometry>(topic_prefix + "/estimation/" + odom_frame_id_, 10);
 
         if(enable_ground_truth_odometry_publisher_){
-            vehicle_ros->gt_odom_local_pub_ = nh_->create_publisher<nav_msgs::msg::Odometry>(topic_prefix +"/gt/" + odom_frame_id_, 10);
+            vehicle_ros->gt_odom_local_pub_ = nh_->create_publisher<nav_msgs::msg::Odometry>(topic_prefix +"/ground_truth/" + odom_frame_id_, 10);
         }
 
         vehicle_ros->env_pub_ = nh_->create_publisher<airsim_interfaces::msg::Environment>(topic_prefix + "/environment", 10);
@@ -1230,7 +1230,7 @@ AirsimROSWrapper::get_drone_pose(const rclcpp::Time timestamp)
             cur_object_pose.orientation.z(),
             cur_object_pose.orientation.w());
 
-        const double s = std::sqrt(0.5);
+        constexpr double s {std::sqrt(0.5)};
         const tf2::Quaternion q_ENU_NED(s, s, 0.0, 0.0);
         const tf2::Quaternion q_FRD2FLU(1.0, 0.0, 0.0, 0.0);
 
